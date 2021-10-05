@@ -1,25 +1,15 @@
 <template>
   <div id="app">
-    <chat></chat>
+    <the-header></the-header>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import Chat from './components/Chat.vue'
+import TheHeader from './components/nav/TheHeader.vue'
 export default {
-  components: { Chat },
+  components: { TheHeader },
   name: 'App',
 
 }
 </script>
-
-<style>
-/* #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
-</style>
