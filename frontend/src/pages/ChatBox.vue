@@ -1,14 +1,13 @@
 <template>
 <div class="container">
-    <!-- <chat-header></chat-header> -->
-<h3 class=" text-center">Messaging</h3>
+<h3 class=" text-center mt-5 mb-3">Messaging</h3>
 <div class="messaging">
-      <div class="inbox_msg">
+      <div class="inbox_msg mt-5">
         <div class="inbox_people">
-          <div class="headind_srch">
+          <!-- <div class="headind_srch">
             <div class="recent_heading">
-              <h4>All User</h4>
-            </div>
+              <h4>Chats</h4>
+            </div> -->
             <!-- <div class="srch_bar">
               <div class="stylish-input-group">
                 <input type="text" class="search-bar"  placeholder="Search" >
@@ -16,12 +15,18 @@
                 <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
                 </span> </div>
             </div> -->
-          </div>
+          <!-- </div> -->
           <chat-header></chat-header>
         </div>
         <div class="mesgs">
           <div class="msg_history">
-            <div  v-for="msg of oldMessagesReceive" :key="msg" class="incoming_msg">
+            <div  v-for="msg of oldMessages" :key="msg._id">
+              <div v-if="msg.senderId==LoginsenderId" class="outgoing_msg">
+              <div class="sent_msg">
+                <p>{{msg.message}}</p>
+                <span class="time_date"> {{msg.time}}</span> </div>
+            </div>
+            <div v-else class="incoming_msg">
               <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
               <div class="received_msg">
                 <div class="received_withd_msg">
@@ -29,31 +34,22 @@
                   <span class="time_date">{{msg.time}}</span></div>
               </div>
             </div>
-            <div v-for="msg of oldMessagesSend" :key="msg" class="outgoing_msg">
-              <div class="sent_msg">
-                <p>{{msg.message}}</p>
-                <span class="time_date"> {{msg.time}}</span> </div>
-            </div>
-             <!-- <p v-if="!newSendMessage">{{newSendMessage}}</p> -->
-            <div  v-for="msg of newreceiveMessages" :key="msg" class="incoming_msg">
+          </div>
+          <div v-for="msg in newMessages" :key="msg.msg">
+            <div v-if="LoginsenderId!=msg.id" class="incoming_msg">
               <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
               <div class="received_msg">
                 <div class="received_withd_msg">
-                  <p>{{msg}}</p>
-                  <span class="time_date">{{time}}</span></div>
+                  <p>{{msg.msg}}</p>
+                  <span class="time_date">{{msg.time}}</span></div>
               </div>
             </div>
-            <div v-for="msg of newSendMessage" :key="msg" class="outgoing_msg">
+            <div  v-else class="outgoing_msg">
               <div class="sent_msg">
-                <p>{{msg}}</p>
-                <span class="time_date"> {{time}}</span> </div>
+                <p>{{msg.msg}}</p>
+                <span class="time_date"> {{msg.time}}</span> </div>
             </div>
-            
-            <!-- <div v-for="msg of newMessages" :key="msg" class="outgoing_msg">
-              <div class="sent_msg">
-                <p>{{msg}}</p>
-                <span class="time_date"> {{time}}</span> </div>
-            </div> -->
+          </div>
           </div>
           <div class="type_msg">
             <div class="input_msg_write">
@@ -72,79 +68,66 @@
 import io from 'socket.io-client'
 import ChatHeader from '../components/nav/ChatHeader.vue'
 import axios from 'axios';
-
-// import Chat from '../components/Chat.vue'
 export default {
     components: { ChatHeader },
         data(){
         return{
             text:'',
             socket:'',
-            oldMessagesReceive:[],
-            oldMessagesSend:[],
-            newSendMessage:[],
-            newreceiveMessages:[],
-            time:new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
+            oldMessages:[],
+            senderIdReceived:'',
+            LoginsenderId:this.$senderId,
+            newMessages:[],
+            // time:new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
+            // time:
         }
     },
     methods:{
    async sendMessage(){
-       this.newSendMessage.push(this.text)
-      console.log(`send: ${this.text}`);
-      this.socket.emit('msgToServer',this.text);
-     
-     console.log(this.$senderId);
+
+      const text={
+        msg:this.text,
+        id:this.$senderId,
+        time:new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
+      }
+      this.socket.emit('msgToServer',text)
       const msg={
           senderId:this.$senderId,
           receiverId:this.$route.params.id,
           message:this.text,
-          time:this.time
+          time:new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
       }
-    //   console.log(this.);
+
     const response= await axios.post('http://localhost:3000/chat/save-message',msg)
-    console.log(response.data)
+
       if(response&&response.data){
+        this.senderIdReceived=response.data.senderId
           this.text='';
-        //   this.newSendMessage=''
       }
   
     },
-    receiverMessage(msg){
-      console.log(`recv: ${msg}`);
-      this.newreceiveMessages.push(msg)
-    //   this.newreceiveMessages=''
+    receiverMessage(msg){ 
+      this.newMessages.push(msg)
     },
-   async getAllMessages(){
+  },
+  mounted(){
+          this.socket=io('http://localhost:3000');
+          this.socket.on('msgToClient',(message)=>{
+          this.receiverMessage(message)
+        })
+  },
+ async created(){
+     try {
           const msg={
           senderId:this.$senderId,
           receiverId:this.$route.params.id
         }
         const response= await axios.post('http://localhost:3000/chat/get-messages',msg)
-        console.log(response.data)
-        this.oldMessagesReceive=response.data.receive
-        this.oldMessagesSend=response.data.send
-    }
-  },
-  mounted(){
-        //   this.socket=io('http://localhost:3000');
-        //   this.socket.on('msgToClient',(message)=>{
-        //   console.log(message);
-        //   this.receiverMessage(message)
-        // })
-  },
-watch: {
-
-}, 
- async created(){
-     try {
-           this.socket=io('http://localhost:3000');
-          this.socket.on('msgToClient',(message)=>{
-          console.log(message);
-          this.receiverMessage(message)
-        })
+        this.oldMessages=response.data
      } catch (error) {
          console.log(error);
      }
+
   }
 }
 </script>
@@ -166,7 +149,7 @@ img{ max-width:100%;}
 .top_spac{ margin: 20px 0 0;}
 
 
-.recent_heading {float: left; width:40%;}
+
 .srch_bar {
   display: inline-block;
   text-align: right;
@@ -174,11 +157,7 @@ img{ max-width:100%;}
 }
 .headind_srch{ padding:10px 29px 10px 20px; overflow:hidden; border-bottom:1px solid #c4c4c4;}
 
-.recent_heading h4 {
-  color: #05728f;
-  font-size: 21px;
-  margin: auto;
-}
+
 .srch_bar input{ border:1px solid #cdcdcd; border-width:0 0 1px 0; width:80%; padding:2px 0 4px 6px; background:none;}
 .srch_bar .input-group-addon button {
   background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
@@ -189,18 +168,8 @@ img{ max-width:100%;}
 }
 .srch_bar .input-group-addon { margin: 0 0 0 -27px;}
 
-.chat_ib h5 router-link{ font-size:15px; color:#464646; margin:0 0 8px 0;}
-.chat_ib h5 span{ font-size:13px; float:right;}
-.chat_ib p{ font-size:14px; color:#989898; margin:auto}
-.chat_img {
-  float: left;
-  width: 11%;
-}
-.chat_ib {
-  float: left;
-  padding: 0 0 0 15px;
-  width: 88%;
-}
+
+
 
 .chat_people{ overflow:hidden; clear:both;}
 .chat_list {
@@ -208,7 +177,7 @@ img{ max-width:100%;}
   margin: 0;
   padding: 18px 16px 10px;
 }
-.inbox_chat { height: 550px; overflow-y: scroll;}
+
 
 .active_chat{ background:#ebebeb;}
 
@@ -264,9 +233,13 @@ img{ max-width:100%;}
   font-size: 15px;
   min-height: 48px;
   width: 100%;
+  border: 0 !important;
+  outline: none !important; 
+ width: 570px;
+ padding-top: 5px;
 }
 
-.type_msg {border-top: 1px solid #c4c4c4;position: relative;}
+.type_msg {border-top: 1px solid #c4c4c4;position: relative; margin: 0 -15px 0 -25px; padding: 0 20px;}
 .msg_send_btn {
   background: #05728f none repeat scroll 0 0;
   border: medium none;
@@ -276,7 +249,7 @@ img{ max-width:100%;}
   font-size: 17px;
   height: 33px;
   position: absolute;
-  right: 0;
+  right: 20px;
   top: 11px;
   width: 33px;
 }
@@ -284,5 +257,10 @@ img{ max-width:100%;}
 .msg_history {
   height: 516px;
   overflow-y: auto;
+}
+.text-center{
+ color: #05728f;
+ font-weight: 700;
+ 
 }
 </style>

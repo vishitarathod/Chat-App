@@ -21,6 +21,7 @@ let routes=[
     },
     {
         path:'/chatbox/:id',
+        name: 'chatbox',
         component: () => import('../pages/ChatBox.vue'),
         meta: { requiredAuth: false },
 

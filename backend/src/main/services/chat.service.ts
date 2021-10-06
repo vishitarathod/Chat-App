@@ -36,11 +36,12 @@ export class ChatService {
   async getMessages(@Req() req: Request, @Res() res: Response){
     try {
       console.log(req.body);
-     const send= await this.chatModel.find({senderId:req.body.senderId,receiverId:req.body.receiverId})
-    const receive= await this.chatModel.find({senderId:req.body.receiverId,receiverId:req.body.senderId})
+    //  const send= await this.chatModel.find({senderId:req.body.senderId,receiverId:req.body.receiverId})
+
+    const messages= await this.chatModel.find({$or: [{senderId:req.body.receiverId,receiverId:req.body.senderId},{senderId:req.body.senderId,receiverId:req.body.receiverId}]})
     
-    //  console.log(messages);
-     return {send,receive}
+     console.log(messages);
+     return messages
   } catch (e) {
     res.status(400).send(e);
   }

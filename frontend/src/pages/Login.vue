@@ -1,31 +1,30 @@
 <template>
-  <div>
+<div class="login-wrapper">
+  <div class="login-box">
     <h1 class="heading-center">Login</h1>  
     <form class="lg-form">
-  <div>
-    <label for="phoneNo"><b>Phone Number</b></label>
+  <div class="form-group">
+    <label for="phoneNo">Phone Number</label>
     <input type="text" placeholder="Enter phone number" v-model.trim="phoneNo" required>
   </div>
-  <div>
-    <label for="psw"><b>Password</b></label>
+  <div class="form-group">
+    <label for="psw">Password</label>
     <input type="password" placeholder="Enter Password" v-model.trim="password" required>
   </div>
   <p class="error" v-if="error!=''">{{error}}</p>
   
   <div class="router">
-   <button @click.prevent="login()">Login</button>
+   <button @click.prevent="login()" class="btn">Login</button>
   </div>
-  <div class="container">
-    <p> <router-link to="/forgot">forgot password?</router-link></p>
-  </div>
+  <router-link to="/forgot" class="forgot-link">forgot password?</router-link>
 </form>
-  <p>
+  <p class="mt-4">
     Don't have an account? <span><router-link to="/register">Register</router-link></span>
   </p>
 </div>
+</div>
 
 </template>
-
 <script>
 import Vue from 'vue'
 import axios from 'axios'
@@ -61,54 +60,16 @@ export default {
     }
 }
 </script>
+
 <style>
-/* form.lg-form {
-  margin: 16px;
-  padding: 32px;
-  border: 4px solid #d1d5db;
-  min-width: 400px;
-  border-radius: 16px;
-}
-.error{
-  color: red;
-  padding: 15px 0px;
-}
-.lg-form label,
-.lg-form input {
-  display: block;
-  min-width: 100%;
-  margin: 8px 0px;
-}
-
-.lg-form label {
-  font-weight: bold;
-}
-.lg-form input {
-  height: 34px;
-  border: none;
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 1rem;
-  background-color: #f3f4f6;
-}
-input:focus {
-  outline: none;
-  background-color: #fff;
-  border: 2px solid #f3f4f6;
-}
-
-button{
-  background-color: #0892d0;
-  border-radius: 8px;
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
-.heading-center{
-  text-align: center;
-} */
+.login-wrapper{min-height: calc(100vh - 62px); display: flex; align-items: center; justify-content: center;}
+.login-box{display: flex; flex-direction: column; max-width: 300px; width: 100%; align-items: center;}
+.login-box .lg-form{width: 100%; max-width: 100%55555555;}
+.login-box>h1{font-size: 28px; margin-bottom: 24px; line-height: 34px; font-weight: 500;}
+.form-group{display: flex; width:100%; flex-direction: column; margin-bottom: 10px;}
+.form-group>label{font-size: 16px; line-height: 20px; color: #666666; margin-bottom: 0; font-weight: 400;}
+.form-group input{outline: none; border: 1px solid #c4c4c4; padding: 5px 10px; border-radius: 8px;}
+.form-group input::placeholder{font-size: 12px; line-height: 14px; color: #bcbdbd;}
+.login-box .btn{border: 0; width: 100%; background-color: #007bff; color: #ffffff;}
+.forgot-link{margin-left: auto; display: block; text-align: right;}
 </style>

@@ -1,21 +1,20 @@
 <template>
 <div>
     <div class="container">
-     <div class="inbox_msg">
+      <h3 class=" text-center mt-5 mb-3">Messaging</h3>
+      <!-- <div class="messaging"> -->
+     <div class="inbox_msg mt-5" >
         <div class="inbox_people">
-          <div class="headind_srch">
-            <div class="recent_heading">
-              <h4>All User</h4>
-            </div>
-          </div>
+          
           <chat-header></chat-header>
         </div>
         <div class="chat">
-         <h1 style="margin-top:25%">welcome to the chat</h1>
+         <h1 style="margin-top:25%">Welcome to The Chat</h1>
         </div>
      </div>
     </div>
-</div>
+    </div>
+<!-- </div> -->
 
 
 </template>
@@ -30,6 +29,15 @@ export default {
 <style scoped>
 .chat{
     text-align: center;
-    margin: 17px;
+    margin:10px;
+    /* color: rgb(73, 56, 56);; */
+        text-align: center;
+    margin: 15px;
+    color: #05728f;
+    /* text-align-last: center; */
+}
+.text-center{
+ color: #05728f;
+ font-weight: 700;
 }
 </style>
