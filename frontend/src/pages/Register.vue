@@ -28,7 +28,7 @@
 </div>
 </template>
 <script>
-import axios from 'axios'
+import jwtInterceptor from '../plugins/jwt.interceptor'
 export default {
     data(){
         return{
@@ -49,8 +49,8 @@ export default {
         phoneNo:this.phoneNo,
         password: this.password, 
       }
-        const response = await axios
-        .post("http://localhost:3000/user/register",payload)
+        const response = await jwtInterceptor
+        .post("/user/register",payload)
         if(response&&response.data){
             this.$router.push('/login')
         }

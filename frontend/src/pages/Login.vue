@@ -23,11 +23,10 @@
   </p>
 </div>
 </div>
-
 </template>
 <script>
 import Vue from 'vue'
-import axios from 'axios'
+import jwtInterceptor from '../plugins/jwt.interceptor'
 export default {
     data(){
         return{
@@ -44,17 +43,19 @@ export default {
         phoneNo:this.phoneNo,
         password: this.password, 
       }
-        const response = await axios
-        .post("http://localhost:3000/user/login",payload)
+        const response = await jwtInterceptor
+        .post("/user/login",payload)
         console.log(response.data)
         if(response&&response.data){
-          Vue.prototype.$senderId = response.data
-            // sessionStorage.setItem('senderId',response.data)
+          Vue.prototype.$senderId = response.data.userId
+          // Vue.prototype.$accessToken=response.data.accessToken
+
+            localStorage.setItem('accessToken',response.data.accessToken)
             // sessionStorage.setItem('isAuthenticated',true)
             this.$router.push('/chat')
         }
       } catch (error) {
-        this.error=error.response.data.message
+        this.error=error
       }
     },
     }

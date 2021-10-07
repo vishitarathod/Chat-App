@@ -13,7 +13,7 @@ export class ChatService {
     //get all user
   async allUser(@Req() req: Request, @Res() res: Response) {
     try {
-        console.log(req.body);
+        // console.log(req.body);
         const users= await this.userModel.find({_id: { $ne: req.body.senderId}})
       return users
     } catch (e) {
@@ -26,7 +26,7 @@ export class ChatService {
     try {
         const newMessage= new this.chatModel(req.body)
         const savedMessage = await newMessage.save()
-        console.log(savedMessage)
+        // console.log(savedMessage)
         return savedMessage;
     } catch (e) {
       res.status(400).send(e);
@@ -35,12 +35,12 @@ export class ChatService {
 
   async getMessages(@Req() req: Request, @Res() res: Response){
     try {
-      console.log(req.body);
+      // console.log(req.body);
     //  const send= await this.chatModel.find({senderId:req.body.senderId,receiverId:req.body.receiverId})
 
     const messages= await this.chatModel.find({$or: [{senderId:req.body.receiverId,receiverId:req.body.senderId},{senderId:req.body.senderId,receiverId:req.body.receiverId}]})
     
-     console.log(messages);
+    //  console.log(messages);
      return messages
   } catch (e) {
     res.status(400).send(e);

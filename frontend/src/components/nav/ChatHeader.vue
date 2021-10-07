@@ -5,7 +5,6 @@
               <h4>Chats</h4>
             </div>
           </div>
-          
      <div class="inbox_chat">
             <div  v-for="user of users" :key="user._id" class="chat_list active_chat">
               <div class="chat_people">
@@ -23,7 +22,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import jwtInterceptor from '../../plugins/jwt.interceptor'
 export default {
     data(){
         return{
@@ -32,20 +31,15 @@ export default {
     },
    async created(){
         try {
-        let apiURL ="http://localhost:3000/chat/all-user";
+        let apiURL ="/chat/all-user";
        const senderId=this.$senderId
-       const response=await axios.post(apiURL,{senderId})
+       const response=await jwtInterceptor.post(apiURL,{senderId})
        console.log(response.data)
        this.users=response.data
         } catch (error) {
             console.log(error);
         }
     },
-    methods:{
-      test(){
-        console.log("object11");
-      }
-    }
 }
 </script>
 

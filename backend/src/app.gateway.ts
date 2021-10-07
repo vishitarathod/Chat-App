@@ -24,7 +24,8 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
   
   @SubscribeMessage('msgToServer')
   handleMessage(client: Socket, text: string): void {
-    // console.log(",,,,,,,,,,,,,",client)
+    console.log(client);
+    console.log(text);
     this.wss.emit('msgToClient', text);
   }
 }

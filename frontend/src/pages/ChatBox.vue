@@ -4,10 +4,6 @@
 <div class="messaging">
       <div class="inbox_msg mt-5">
         <div class="inbox_people">
-          <!-- <div class="headind_srch">
-            <div class="recent_heading">
-              <h4>Chats</h4>
-            </div> -->
             <!-- <div class="srch_bar">
               <div class="stylish-input-group">
                 <input type="text" class="search-bar"  placeholder="Search" >
@@ -15,7 +11,6 @@
                 <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
                 </span> </div>
             </div> -->
-          <!-- </div> -->
           <chat-header></chat-header>
         </div>
         <div class="mesgs">
@@ -49,6 +44,7 @@
                 <p>{{msg.msg}}</p>
                 <span class="time_date"> {{msg.time}}</span> </div>
             </div>
+            {{tick}}
           </div>
           </div>
           <div class="type_msg">
@@ -65,9 +61,10 @@
 
 
 <script>
+// var audio=
 import io from 'socket.io-client'
 import ChatHeader from '../components/nav/ChatHeader.vue'
-import axios from 'axios';
+import jwtInterceptor from '../plugins/jwt.interceptor'
 export default {
     components: { ChatHeader },
         data(){
@@ -78,13 +75,14 @@ export default {
             senderIdReceived:'',
             LoginsenderId:this.$senderId,
             newMessages:[],
-            // time:new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
-            // time:
+            tick:0
         }
     },
     methods:{
    async sendMessage(){
-
+    // var audio=new Audio('ting.mp3')
+    //        audio.play()
+    this.tick=1
       const text={
         msg:this.text,
         id:this.$senderId,
@@ -98,7 +96,7 @@ export default {
           time:new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
       }
 
-    const response= await axios.post('http://localhost:3000/chat/save-message',msg)
+    const response= await jwtInterceptor.post('/chat/save-message',msg)
 
       if(response&&response.data){
         this.senderIdReceived=response.data.senderId
@@ -107,12 +105,17 @@ export default {
   
     },
     receiverMessage(msg){ 
+      
+      if(msg.id!=this.LoginsenderId){
+        this.tick=2
+      }
       this.newMessages.push(msg)
     },
   },
   mounted(){
           this.socket=io('http://localhost:3000');
           this.socket.on('msgToClient',(message)=>{
+            console.log(message)
           this.receiverMessage(message)
         })
   },
@@ -122,7 +125,7 @@ export default {
           senderId:this.$senderId,
           receiverId:this.$route.params.id
         }
-        const response= await axios.post('http://localhost:3000/chat/get-messages',msg)
+        const response= await jwtInterceptor.post('/chat/get-messages',msg)
         this.oldMessages=response.data
      } catch (error) {
          console.log(error);

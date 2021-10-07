@@ -2,7 +2,6 @@
 <div>
     <div class="container">
       <h3 class=" text-center mt-5 mb-3">Messaging</h3>
-      <!-- <div class="messaging"> -->
      <div class="inbox_msg mt-5" >
         <div class="inbox_people">
           
@@ -14,9 +13,6 @@
      </div>
     </div>
     </div>
-<!-- </div> -->
-
-
 </template>
 
 <script>
@@ -30,11 +26,9 @@ export default {
 .chat{
     text-align: center;
     margin:10px;
-    /* color: rgb(73, 56, 56);; */
-        text-align: center;
+    text-align: center;
     margin: 15px;
     color: #05728f;
-    /* text-align-last: center; */
 }
 .text-center{
  color: #05728f;

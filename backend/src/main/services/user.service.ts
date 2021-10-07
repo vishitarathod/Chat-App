@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { User } from '../interfaces/user.interface';
 import { Request ,Response} from 'express'
 import { GenerateHashPasswordService } from './helper/generate-hash-password.service';
+import { AuthenticationService } from './helper/authentication.service';
 
 @Injectable()
 export class UserService {
     constructor(@InjectModel('User') private readonly userModel : Model<User>,
-    private generateHashPasswordService: GenerateHashPasswordService,) {}
+    private generateHashPasswordService: GenerateHashPasswordService,
+    private authenticationService: AuthenticationService,) {}
 
       //registration function
   async registerUser(@Req() req: Request, @Res() res: Response) {
@@ -45,8 +47,11 @@ export class UserService {
         throw new NotFoundException(`${req.body.phoneNo} is not register`);
       }
       const userOne = await this.userModel.findOne({ phoneNo: req.body.phoneNo });
-
-      return userOne._id;
+      const accessToken = await this.authenticationService.getJwtAccessToken(
+        userOne._id,
+      );
+    const userId=userOne._id
+      return {userId,accessToken};
     } catch (e) {
       console.log('=========', e);
       res.status(400).send(e);

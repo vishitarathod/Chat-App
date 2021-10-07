@@ -5,7 +5,7 @@ import router from './router';
 import 'vue-loaders/dist/vue-loaders.css';
 import VueLoaders from 'vue-loaders';
 import store from './store/index'
-
+// console.log(Vue.prototype.$accessToken)
 Vue.config.productionTip = false
 Vue.use(VueRouter);
 Vue.use(VueLoaders);
