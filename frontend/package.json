@@ -12,6 +12,8 @@
     "core-js": "^3.6.5",
     "socket.io-client": "^4.2.0",
     "vue": "^2.6.11",
+    "vue-chat-emoji": "^1.1.27",
+    "vue-emoji-picker": "^1.0.3",
     "vue-loaders": "^4.1.4",
     "vue-router": "^3.5.2",
     "vuex": "^3.6.2"

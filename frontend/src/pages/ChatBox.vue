@@ -13,6 +13,7 @@
             </div> -->
           <chat-header></chat-header>
         </div>
+
         <div class="mesgs">
           <div class="msg_history">
             <div  v-for="msg of oldMessages" :key="msg._id">
@@ -44,10 +45,11 @@
                 <p>{{msg.msg}}</p>
                 <span class="time_date"> {{msg.time}}</span> </div>
             </div>
-            {{tick}}
           </div>
           </div>
+             {{input}}
           <div class="type_msg">
+            <emogi></emogi>
             <div class="input_msg_write">
               <input type="text" class="write_msg" placeholder="Type a message" v-model="text"/>
               <button class="msg_send_btn" type="submit"  @click.prevent="sendMessage()"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
@@ -61,12 +63,15 @@
 
 
 <script>
-// var audio=
+// import Vue from 'vue'
+import Emogi from '../components/Emogi.vue'
 import io from 'socket.io-client'
 import ChatHeader from '../components/nav/ChatHeader.vue'
 import jwtInterceptor from '../plugins/jwt.interceptor'
+// Vue.prototype.$count=0
 export default {
-    components: { ChatHeader },
+    components: { ChatHeader ,Emogi},
+    props:['input'],
         data(){
         return{
             text:'',
@@ -75,14 +80,15 @@ export default {
             senderIdReceived:'',
             LoginsenderId:this.$senderId,
             newMessages:[],
-            tick:0
+            tick:0,
         }
     },
     methods:{
    async sendMessage(){
     // var audio=new Audio('ting.mp3')
     //        audio.play()
-    this.tick=1
+  // console.log(Vue.prototype.$count+1);
+    // this.tick=1
       const text={
         msg:this.text,
         id:this.$senderId,
@@ -106,18 +112,21 @@ export default {
     },
     receiverMessage(msg){ 
       
-      if(msg.id!=this.LoginsenderId){
-        this.tick=2
-      }
+      // if(msg.id!=this.LoginsenderId){
+      //   // this.tick=2
+      //   this.count++
+      // }
       this.newMessages.push(msg)
     },
   },
   mounted(){
-          this.socket=io('http://localhost:3000');
+          this.socket=io('http://localhost:3000')
           this.socket.on('msgToClient',(message)=>{
             console.log(message)
           this.receiverMessage(message)
         })
+
+
   },
  async created(){
      try {

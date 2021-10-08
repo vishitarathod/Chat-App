@@ -15,5 +15,8 @@ export const ChatSchema = new mongoose.Schema({
   },
   time:{
     type:String
-  }
+  },
+
 });  
+
+

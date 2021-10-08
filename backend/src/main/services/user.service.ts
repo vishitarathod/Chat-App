@@ -46,6 +46,9 @@ export class UserService {
       if (count <= 0) {
         throw new NotFoundException(`${req.body.phoneNo} is not register`);
       }
+      // var date=new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
+      //   console.log(date);
+        // await this.userModel.findOneAndUpdate({phoneNo: req.body.phoneNo}, { lastseen: "online" })
       const userOne = await this.userModel.findOne({ phoneNo: req.body.phoneNo });
       const accessToken = await this.authenticationService.getJwtAccessToken(
         userOne._id,

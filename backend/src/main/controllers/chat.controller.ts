@@ -8,7 +8,7 @@ export class ChatController {
 
     //get all user api
     @Post('/all-user')
-    async register(@Req() req: Request, @Res() res: Response) {
+    async allUser(@Req() req: Request, @Res() res: Response) {
       try {
         res.send(await this.chatService.allUser(req, res));
       } catch (error) {
@@ -33,4 +33,22 @@ export class ChatController {
         res.send(error);
       }
     }
+
+    @Post('/disconnected-user')
+    async disconnectedUser(@Req() req: Request, @Res() res: Response){
+      try {
+        res.send(await this.chatService.disconnectedUser(req, res));
+      } catch (error) {
+        res.send(error);
+      }
+    }
+    @Post('/connected-user')
+    async connectedUser(@Req() req: Request, @Res() res: Response){
+      try {
+        res.send(await this.chatService.connectedUser(req, res));
+      } catch (error) {
+        res.send(error);
+      }
+    }
+
 }

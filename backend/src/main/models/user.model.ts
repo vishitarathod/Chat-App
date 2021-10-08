@@ -16,5 +16,9 @@ export const UserSchema = new mongoose.Schema({
   password: {
     type:String,
     required:true
+  },
+  lastseen:{
+    type:String,
+
   }
 });  

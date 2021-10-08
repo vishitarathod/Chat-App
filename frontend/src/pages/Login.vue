@@ -26,19 +26,23 @@
 </template>
 <script>
 import Vue from 'vue'
+import io from 'socket.io-client'
 import jwtInterceptor from '../plugins/jwt.interceptor'
 export default {
     data(){
         return{
             phoneNo:'',
             password:'',
-            error:''
+            error:'',
+            socket:io('http://localhost:3000')
         }
     },
     methods:{
     async login() {
     //  this.$store.commit('setLoading',true)
      try {
+        // const socket = io();
+
         const payload = {
         phoneNo:this.phoneNo,
         password: this.password, 
@@ -49,7 +53,7 @@ export default {
         if(response&&response.data){
           Vue.prototype.$senderId = response.data.userId
           // Vue.prototype.$accessToken=response.data.accessToken
-
+                  this.socket.emit('login',{userId:response.data.userId});
             localStorage.setItem('accessToken',response.data.accessToken)
             // sessionStorage.setItem('isAuthenticated',true)
             this.$router.push('/chat')
