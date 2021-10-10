@@ -49,16 +49,12 @@ export class ChatService {
 
   async disconnectedUser(@Req() req: Request, @Res() res: Response) {
     try {
-        console.log(req.body);
+        console.log("disconnected.......",req.body);
         var date=new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
         console.log(date);
-        // const users:any= await this.userModel.findOne({_id: req.body.id})
-        // const _id=users._id
-        // console.log(users)
-        // console.log(_id);
-       const updatedUser: any= await this.userModel.findOneAndUpdate({_id: req.body.id}, { lastseen: date })
-       console.log(updatedUser.lastseen);
-      return updatedUser.lastseen
+        const updatedUser =await this.userModel.updateOne({_id:req.body.id},{ $set: { lastseen: date } })
+       console.log(updatedUser);
+      return date
     } catch (e) {
       res.status(400).send(e);
     }
@@ -66,15 +62,9 @@ export class ChatService {
   async connectedUser(@Req() req: Request, @Res() res: Response) {
     try {
         console.log("re1.",req.body);
-        // var date=new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
-        // console.log(date);
-        // const users:any= await this.userModel.findOne({_id: req.body.id})
-        // const _id=users._id
-        // console.log(users)
-        // console.log(_id);
-       const updatedUser: any= await this.userModel.findOneAndUpdate({_id: req.body.id}, { lastseen: "online" })
-       console.log(updatedUser.lastseen);
-      return updatedUser.lastseen
+        const updatedUser =await this.userModel.updateOne({_id:req.body.id},{ $set: { lastseen: "online" } })
+       console.log(updatedUser);
+      return "online"
     } catch (e) {
       res.status(400).send(e);
     }

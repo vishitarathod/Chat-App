@@ -39,6 +39,7 @@ export default {
     },
     methods:{
     async login() {
+      // this.socket=io
     //  this.$store.commit('setLoading',true)
      try {
         // const socket = io();
@@ -62,6 +63,27 @@ export default {
         this.error=error
       }
     },
+
+      
+    },
+   async mounted(){
+      // const users=await this.$store.getters.getUsers
+      // console.log('---------',users);
+       this.socket.on('connected',(id)=>{
+       const payload={
+          id
+        }
+        this.$store.dispatch("updateLastSeenToOnline",payload)
+        })
+
+      //   this.socket.on('disconnected',(id)=>{
+      //   console.log("msg",id)
+      //   // this.updateLastSeen(id)
+      //  const payload={
+      //     id:id
+      //   }
+      //   this.$store.dispatch("updateLastSeen",payload)
+      //   })
     }
 }
 </script>

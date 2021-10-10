@@ -47,31 +47,30 @@
             </div>
           </div>
           </div>
-             {{input}}
           <div class="type_msg">
-            <emogi></emogi>
+            
             <div class="input_msg_write">
+              <emoji @changeTitle="inputEmoji($event)"></emoji>
               <input type="text" class="write_msg" placeholder="Type a message" v-model="text"/>
               <button class="msg_send_btn" type="submit"  @click.prevent="sendMessage()"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
             </div>
           </div>
         </div>
       </div>
-      
     </div></div>
 </template>
 
 
 <script>
 // import Vue from 'vue'
-import Emogi from '../components/Emogi.vue'
+import Emoji from '../components/Emogi.vue'
 import io from 'socket.io-client'
 import ChatHeader from '../components/nav/ChatHeader.vue'
 import jwtInterceptor from '../plugins/jwt.interceptor'
 // Vue.prototype.$count=0
 export default {
-    components: { ChatHeader ,Emogi},
-    props:['input'],
+    components: { ChatHeader ,Emoji},
+    // props:['changeTitle'],
         data(){
         return{
             text:'',
@@ -118,6 +117,9 @@ export default {
       // }
       this.newMessages.push(msg)
     },
+    inputEmoji(emoji){
+      this.text += emoji
+    }
   },
   mounted(){
           this.socket=io('http://localhost:3000')
@@ -155,8 +157,7 @@ img{ max-width:100%;}
 }
 .inbox_msg {
   border: 1px solid #c4c4c4;
-  clear: both;
-  overflow: hidden;
+  display: flex;
 }
 .top_spac{ margin: 20px 0 0;}
 
@@ -238,6 +239,10 @@ img{ max-width:100%;}
   float: right;
   width: 46%;
 }
+.input_msg_write{display: flex; align-items: center; position: relative;}
+.emoji-wrapper{position: absolute; left: 0; box-shadow: 0 0 8px 0 rgba(0,0,0,0.2); padding: 15px; border: 1px solid #c4c4c4; top:-100px; background-color: #fff;height: 100px; overflow-y: auto;}
+.emoji-wrapper h5{font-size: 16px; line-height: 24px; color: #333333;}
+.emoji-wrapper>div>div>div{margin-bottom: 12px;}
 .input_msg_write input {
   background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
   border: medium none;
@@ -247,7 +252,9 @@ img{ max-width:100%;}
   width: 100%;
   border: 0 !important;
   outline: none !important; 
- width: 570px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
  padding-top: 5px;
 }
 
@@ -259,11 +266,8 @@ img{ max-width:100%;}
   color: #fff;
   cursor: pointer;
   font-size: 17px;
-  height: 33px;
-  position: absolute;
-  right: 20px;
-  top: 11px;
-  width: 33px;
+  height: 34px;
+  width: 34px;
 }
 .messaging { padding: 0 0 50px 0;}
 .msg_history {

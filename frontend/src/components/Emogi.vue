@@ -1,12 +1,10 @@
 <template>
     <div>
-    <!-- <textarea v-model="input"></textarea> -->
-<!-- {{text}} -->
-<emoji-picker @emoji="insert" :search="search">
+<emoji-picker @emoji="insert" >
   <div slot="emoji-invoker" slot-scope="{ events: { click: clickEvent } }" @click.stop="clickEvent">
-    <button type="button">open</button>
+    <button class="emoji_send_btn" type="submit"><i class="fa-solid fa-face-smile"></i></button>
   </div>
-  <div slot="emoji-picker" slot-scope="{ emojis, insert }">
+  <div slot="emoji-picker" class="emoji-wrapper" slot-scope="{ emojis, insert }">
     <div>
       <div>
         <div v-for="(emojiGroup, category) in emojis" :key="category">
@@ -30,22 +28,31 @@
 <script>
 import EmojiPicker from 'vue-emoji-picker'
 export default {
-    // props:["text"],
+
     components: {
-    //  TheHeader 
+
     EmojiPicker,
 
      },
-       data() {
-    return {
-      input: '',
-    //   search: '',
-    }
-  },
+
   methods: {
     insert(emoji) {
-      this.input += emoji
+
+      this.$emit('changeTitle',emoji)
     },
   },
 }
 </script>
+
+<style scoped>
+.emoji_send_btn {
+  /* background: #05728f none repeat scroll 0 0;
+  border: medium none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 17px; */
+  height: 34px;
+  width: 34px;
+}
+</style>

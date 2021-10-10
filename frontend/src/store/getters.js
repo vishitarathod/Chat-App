@@ -1,5 +1,9 @@
 export default{
-    getLoginApiStatus(state) {
-        return state.loginApiStatus;
+
+      getUpdateLastSeenToOnline(state) {
+        return state.users;
+      },
+      getUsers(state) {
+        return state.users;
       },
 }

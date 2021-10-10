@@ -30,7 +30,7 @@ export default {
    
         return{
             users:[],
-            socket:'',
+            socket:io('http://localhost:3000'),
             offline:'',
             name:''
         }
@@ -42,64 +42,33 @@ export default {
        const response=await jwtInterceptor.post(apiURL,{senderId})
       //  console.log(response.data)
        this.users=response.data
-       console.log('get usersssssssssss',this.users);
-
-        this.socket=io('http://localhost:3000')
-        this.socket.on('connected',(message)=>{
-        console.log("msg",message)
-        this.updateLastSeenToOnline(message)
-        })
-      
-        this.socket.on('disconnected',async (id)=>{
-        // console.log("msg",message)
-        // this.updateLastSeen(message)
-        if(id!=null){
-         console.log(id);
-        const response=await jwtInterceptor.post('/chat/disconnected-user',{id})
-       console.log("res.....data.........",response.data)
-       console.log("total users....",this.users);
-      // for(var i=0;i<this.users.length;i++){
-         for (var i in this.users) {
-         if(id==this.users[i]._id){
-           console.log("idsssssss",this.users[i]._id);
-           console.log("before last seenssssss",this.users[i].lastseen);
-           this.users[i].lastseen=new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
-           console.log("after last seenssssss",this.users[i].lastseen);
-           return
-         }
-       }
-       }
-})
+      //  console.log('get usersssssssssss',this.users);
         } catch (error) {
             console.log(error);
         }
     },
     methods:{
-    //  async updateLastSeen(id){
-       
-    //   },
-      async updateLastSeenToOnline(id){
-       if(id!=null){
-        const response=await jwtInterceptor.post('/chat/connected-user',{id})
-       console.log("res.....data.........",response.data)
-       console.log("total users....",this.users);
-      // for(var i=0;i<this.users.length;i++){
-         for (var i in this.users) {
-         if(id==this.users[i]._id){
-           console.log("idsssssss",this.users[i]._id);
-           console.log("before last seenssssss",this.users[i].lastseen);
-           this.users[i].lastseen="online"
-           console.log("after last seenssssss",this.users[i].lastseen);
-           return
-         }
-       }
-       }
-      }
-    },
-    // mounted(){
-       
+   
       
-    // }
+    },
+
+   async mounted(){
+      //      this.socket.on('connected',(id)=>{
+      //           console.log("msg",id)
+      //   // this.updateLastSeen(id)
+      //  const payload={
+      //     users:this.users,
+      //     id:id
+      //   }
+      //   this.$store.dispatch("updateLastSeenToOnline",payload)
+      //   }) 
+      
+    //  await this.$store.commit('setUsers',this.users)
+    //  console.log(await this.$store.state.users);
+      const users=await this.$store.getters.getUpdateLastSeenToOnline
+      console.log("uuuuuuuuuuuuuuuuuuuuuu",users);
+      this.users=users
+    }
 }
 </script>
 

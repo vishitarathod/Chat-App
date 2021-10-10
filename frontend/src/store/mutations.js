@@ -1,11 +1,11 @@
 export default{
-    setLoading(state, data) {
-        state.isLoading = data;
+
+      setUpdateLastSeenToOnline(state, data) {
+        console.log("dataaaaaaaaa",data);
+        state.onlineUsers = data;
       },
-      setLoginApiStatus(state, data) {
-        state.loginApiStatus = data;
+      setUsers(state, data) {
+        console.log("dataaaaaaaaa",data);
+        state.users = data;
       },
-      setLogout(state, payload){
-        state.logOut = payload;
-       }
 }

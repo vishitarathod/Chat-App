@@ -19,6 +19,7 @@
 import ChatHeader from '../components/nav/ChatHeader.vue'
 export default {
     components: { ChatHeader },
+    
 }
 </script>
 
