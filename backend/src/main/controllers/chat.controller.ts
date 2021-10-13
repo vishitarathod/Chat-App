@@ -17,11 +17,13 @@ export class ChatController {
     }
 
     @Post('/save-message')
-    async saveMessage(@Req() req: Request, @Res() res: Response){
+    async saveMessage(text:any){
       try {
-        res.send(await this.chatService.saveMessage(req, res));
+        
+        return this.chatService.saveMessage(text)
       } catch (error) {
-        res.send(error);
+        // res.send(error);
+        return error
       }
     }
 
@@ -50,5 +52,30 @@ export class ChatController {
         res.send(error);
       }
     }
+    @Post('/create-chat-id')
+    async createChatId(@Req() req: Request, @Res() res: Response){
+      try {
+        res.send(await this.chatService.createChatId(req, res));
+      } catch (error) {
+        res.send(error);
+      }
+    }
 
+    @Post('/update-notification')
+    async updateNotificationCount(@Req() req: Request, @Res() res: Response){
+      try {
+        res.send(await this.chatService.updateNotificationCount(req, res));
+      } catch (error) {
+        res.send(error);
+      }
+    }
+
+     @Post('/all-notification')
+     async allNotification(@Req() req: Request, @Res() res: Response) {
+       try {
+         res.send(await this.chatService.allNotification(req, res));
+       } catch (error) {
+         res.send(error);
+       }
+     }
 }

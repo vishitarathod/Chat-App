@@ -19,6 +19,5 @@ export const UserSchema = new mongoose.Schema({
   },
   lastseen:{
     type:String,
-
-  }
+  },
 });  

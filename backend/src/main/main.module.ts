@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ChatController } from './controllers/chat.controller';
 import { UserController } from './controllers/user.controller';
 import { ChatSchema } from './models/chat.model';
+import { NotificationSchema } from './models/notification.model';
 import { UserSchema } from './models/user.model';
 import { ChatService } from './services/chat.service';
 import { AuthenticationService } from './services/helper/authentication.service';
@@ -16,9 +17,9 @@ import { UserService } from './services/user.service';
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: async () => ({}),
-      }),MongooseModule.forFeature([{name:'User', schema:UserSchema},{name:'Chat', schema:ChatSchema}])],
+      }),MongooseModule.forFeature([{name:'User', schema:UserSchema},{name:'Chat', schema:ChatSchema},{name:'Notification',schema:NotificationSchema}])],
     controllers: [UserController,ChatController],
     providers: [UserService,GenerateHashPasswordService,ChatService,AuthenticationService],
-    exports: [AuthenticationService],
+    exports: [AuthenticationService,ChatService],
 })
 export class MainModule {}

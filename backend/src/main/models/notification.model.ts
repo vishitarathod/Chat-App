@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-export const ChatSchema = new mongoose.Schema({
+export const NotificationSchema = new mongoose.Schema({
   senderId:{
     type:mongoose.Schema.Types.ObjectId,
     ref:'User'
@@ -10,14 +10,10 @@ export const ChatSchema = new mongoose.Schema({
     type:mongoose.Schema.Types.ObjectId,
     ref:'User'
   },
-  message: {
-    type: String
-  },
-  time:{
-    type:String
-  },
-  
-
+  notification_count: {
+    type: String,
+    default:0
+  }
 });  
 
 

@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MainModule } from './main/main.module';
 import { AuthMiddleware } from './main/middleware/AuthMIddleware';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ChatService } from './main/services/chat.service';
 // import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   }),MongooseModule.forRoot('mongodb://localhost:27017/chat-app'), MainModule],
   controllers: [],
   providers: [AppGateway,ConfigService],
+  // exports: [ChatService],
 })
 
 export class AppModule implements NestModule {

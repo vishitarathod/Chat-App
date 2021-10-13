@@ -25,4 +25,5 @@ export class UserController {
         res.send(error);
         }
   }
+
 }

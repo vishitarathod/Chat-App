@@ -2,7 +2,7 @@
     <div>
 <emoji-picker @emoji="insert" >
   <div slot="emoji-invoker" slot-scope="{ events: { click: clickEvent } }" @click.stop="clickEvent">
-    <button class="emoji_send_btn" type="submit"><i class="fa-solid fa-face-smile"></i></button>
+    <button class="emoji_send_btn" type="submit"><i class="fa-regular fa-face-laugh"></i></button>
   </div>
   <div slot="emoji-picker" class="emoji-wrapper" slot-scope="{ emojis, insert }">
     <div>
@@ -30,14 +30,11 @@ import EmojiPicker from 'vue-emoji-picker'
 export default {
 
     components: {
-
     EmojiPicker,
-
      },
 
   methods: {
     insert(emoji) {
-
       this.$emit('changeTitle',emoji)
     },
   },

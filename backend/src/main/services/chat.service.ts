@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { User } from '../interfaces/user.interface';
 import { Request ,Response} from 'express'
 import { Chat } from '../interfaces/chat.interface';
+import { NotificationInt } from '../interfaces/notification.interface';
 
 @Injectable()
 export class ChatService {
     constructor(@InjectModel('User') private readonly userModel : Model<User>,
-    @InjectModel('Chat') private readonly chatModel : Model<Chat>) {}
+    @InjectModel('Chat') private readonly chatModel : Model<Chat>,
+    @InjectModel('Notification') private readonly notificationModel : Model<NotificationInt>,) {}
 
     //get all user
   async allUser(@Req() req: Request, @Res() res: Response) {
@@ -21,15 +23,15 @@ export class ChatService {
     }
   }
 
-  async saveMessage(@Req() req: Request, @Res() res: Response){
+  async saveMessage(text:any){
     // console.log(req.body);
     try {
-        const newMessage= new this.chatModel(req.body)
+        const newMessage= new this.chatModel(text)
         const savedMessage = await newMessage.save()
         // console.log(savedMessage)
         return savedMessage;
     } catch (e) {
-      res.status(400).send(e);
+      return e
     }
   }
 
@@ -65,6 +67,45 @@ export class ChatService {
         const updatedUser =await this.userModel.updateOne({_id:req.body.id},{ $set: { lastseen: "online" } })
        console.log(updatedUser);
       return "online"
+    } catch (e) {
+      res.status(400).send(e);
+    }
+  }
+  async createChatId(@Req() req: Request, @Res() res: Response) {
+    try {
+        console.log("re1.",req.body);
+        const chats= await this.notificationModel.findOne({senderId:req.body.senderId,receiverId:req.body.receiverId})
+        console.log("+++++",chats);
+        if(chats==null){
+          const newChatId= new this.notificationModel(req.body)
+          const savedChatId = await newChatId.save()
+          return savedChatId.notification_count
+        }else{
+          return chats.notification_count
+        }
+
+    } catch (e) {
+      res.status(400).send(e);
+    }
+  }
+
+  async updateNotificationCount(@Req() req: Request, @Res() res: Response) {
+    try {
+        console.log("re1.",req.body);
+        // const chats= await this.notificationModel.findOne({senderId:req.body.senderId,receiverId:req.body.receiverId})
+        const updatedUser =await this.notificationModel.update({senderId:req.body.senderId,receiverId:req.body.receiverId},{ $set: { notification_count: req.body.notification_count } })
+        console.log("+++++",updatedUser);
+        return updatedUser
+    } catch (e) {
+      res.status(400).send(e);
+    }
+  }
+
+  async allNotification(@Req() req: Request, @Res() res: Response) {
+    try {
+        // console.log(req.body);
+        const users= await this.notificationModel.find({receiverId: req.body.receiverId})
+      return users
     } catch (e) {
       res.status(400).send(e);
     }

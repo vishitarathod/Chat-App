@@ -24,6 +24,7 @@
 </div>
 </div>
 </template>
+
 <script>
 import Vue from 'vue'
 import io from 'socket.io-client'
@@ -39,18 +40,13 @@ export default {
     },
     methods:{
     async login() {
-      // this.socket=io
-    //  this.$store.commit('setLoading',true)
      try {
-        // const socket = io();
-
         const payload = {
         phoneNo:this.phoneNo,
         password: this.password, 
       }
         const response = await jwtInterceptor
         .post("/user/login",payload)
-        console.log(response.data)
         if(response&&response.data){
           Vue.prototype.$senderId = response.data.userId
           // Vue.prototype.$accessToken=response.data.accessToken
@@ -63,12 +59,8 @@ export default {
         this.error=error
       }
     },
-
-      
     },
    async mounted(){
-      // const users=await this.$store.getters.getUsers
-      // console.log('---------',users);
        this.socket.on('connected',(id)=>{
        const payload={
           id
@@ -76,13 +68,12 @@ export default {
         this.$store.dispatch("updateLastSeenToOnline",payload)
         })
 
-      //   this.socket.on('disconnected',(id)=>{
-      //   console.log("msg",id)
-      //   // this.updateLastSeen(id)
+      //  await this.socket.on('disconnected',async(id)=>{
       //  const payload={
+      //     users:this.users,
       //     id:id
       //   }
-      //   this.$store.dispatch("updateLastSeen",payload)
+      //  await this.$store.dispatch("updateLastSeen",payload)
       //   })
     }
 }
