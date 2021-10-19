@@ -37,7 +37,7 @@ export class AuthenticationService {
       const user = await this.jwtService.verify(token, {
         secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
       });
-      // console.log(user);
+      // // console.log(user);
       // if (!user) {
       //    res.status(401).json({ error: 'Unauthorized' });
       // }

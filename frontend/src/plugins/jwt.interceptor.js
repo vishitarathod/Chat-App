@@ -16,7 +16,7 @@ jwtInterceptor.interceptors.response.use(
     return response;
   },
   async (error) => {
-    console.log("errrorrrrrrrrrrr",error)
+    // console.log("errrorrrrrrrrrrr",error)
     return error
   }
 );

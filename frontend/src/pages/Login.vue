@@ -35,7 +35,13 @@ export default {
             phoneNo:'',
             password:'',
             error:'',
-            socket:io('http://localhost:3000')
+            socket:io('http://localhost:3000'),
+            // msgId:'',
+            id:0,
+            LoginUserArray:'',
+            names:[],
+            msgId:''
+            // delivered:false
         }
     },
     methods:{
@@ -61,12 +67,41 @@ export default {
     },
     },
    async mounted(){
-       this.socket.on('connected',(id)=>{
+       this.socket.on('connected',async(id)=>{
+        //  console.log("login",++this.id);
+        //  this.LoginUserArray.push(id)
+        // this.$store.commit('setLoginUser',this.LoginUserArray)
+        // console.log(id);
+        // var names=[]
+           this.LoginUserArray= JSON.parse(localStorage.getItem('names')) || [];
+           this.LoginUserArray.push(id)
+           localStorage.setItem("names",JSON.stringify(this.LoginUserArray));
+
+    // var storedNames = JSON.parse(localStorage.getItem("names"));
+         this.msgId=id
+      //    console.log("login");
        const payload={
           id
         }
         this.$store.dispatch("updateLastSeenToOnline",payload)
         })
+
+       this.socket.on('disconnected',async(recId)=>{
+            //  console.log(this.msgId);
+            //  console.log("recId",recId);
+            console.log("disconnecxted");
+            console.log(this.msgId);
+            console.log(recId);
+            //  if(this.msgId==recId){
+               var index = this.LoginUserArray.indexOf(recId);
+                if (index > -1) {
+                  console.log("hello");
+                    this.LoginUserArray.splice(index, 1);
+                    console.log(this.LoginUserArray);
+                     localStorage.setItem("names",JSON.stringify(this.LoginUserArray))
+                }
+            //  }
+           })
 
       //  await this.socket.on('disconnected',async(id)=>{
       //  const payload={

@@ -1,7 +1,7 @@
 export default{
 
-      getUpdateLastSeenToOnline(state) {
-        return state.users;
+      getLoginUser(state) {
+        return state.LoginUser;
       },
       getUsers(state) {
         return state.users;

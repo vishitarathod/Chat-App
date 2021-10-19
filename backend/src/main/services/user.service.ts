@@ -15,7 +15,7 @@ export class UserService {
       //registration function
   async registerUser(@Req() req: Request, @Res() res: Response) {
     try {
-      console.log(req.body)
+      // console.log(req.body)
       const count = await this.userModel.count({ phoneNo: req.body.phoneNo });
 
       if (count > 0) {
@@ -33,7 +33,7 @@ export class UserService {
         return saveduser;
 
     } catch (e) {
-      console.log('=========', e);
+      // console.log('=========', e);
       res.status(400).send(e);
     }
   }
@@ -47,7 +47,7 @@ export class UserService {
         throw new NotFoundException(`${req.body.phoneNo} is not register`);
       }
       // var date=new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
-      //   console.log(date);
+      //   // console.log(date);
         // await this.userModel.findOneAndUpdate({phoneNo: req.body.phoneNo}, { lastseen: "online" })
       const userOne = await this.userModel.findOne({ phoneNo: req.body.phoneNo });
       const accessToken = await this.authenticationService.getJwtAccessToken(
@@ -56,7 +56,7 @@ export class UserService {
     const userId=userOne._id
       return {userId,accessToken};
     } catch (e) {
-      console.log('=========', e);
+      // console.log('=========', e);
       res.status(400).send(e);
     }
   }

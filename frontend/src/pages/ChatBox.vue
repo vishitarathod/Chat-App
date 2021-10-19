@@ -13,14 +13,14 @@
             </div> -->
           <chat-header></chat-header>
         </div>
-
+        
         <div class="mesgs">
           <div class="msg_history">
             <div v-for="msg of oldMessages" :key="msg._id">
               <div v-if="msg.senderId == LoginsenderId" class="outgoing_msg">
                 <div class="sent_msg">
                   <p>{{ msg.message }}</p>
-                  <span class="time_date"> {{ msg.time }}</span>
+                  <span class="time_date"> {{ msg.time }}-{{msg.send}}-{{msg.delivered}}-{{msg.read}}</span>
                 </div>
               </div>
               <div v-else class="incoming_msg">
@@ -35,7 +35,7 @@
                 </div>
               </div>
             </div>
-            <div v-for="msg in newMessages" :key="msg.msg">
+            <!-- <div v-for="msg in newMessages" :key="msg.msg">
               <div v-if="LoginsenderId != msg.senderId" class="incoming_msg">
                 <div class="incoming_msg_img">
                   <img
@@ -51,10 +51,10 @@
               <div v-else class="outgoing_msg">
                 <div class="sent_msg">
                   <p>{{ msg.message }}</p>
-                  <span class="time_date"> {{ msg.time }}</span>
+                  <span class="time_date" > {{ msg.time }}-{{send}}-{{delivered}}-{{read}}</span>
                 </div>
               </div>
-            </div>
+            </div> -->
             {{ notification }}
           </div>
           <div class="type_msg">
@@ -90,7 +90,6 @@ import jwtInterceptor from "../plugins/jwt.interceptor";
 // Vue.prototype.$count=0
 export default {
   components: { ChatHeader, Emoji },
-  // props:['changeTitle'],
   data() {
     return {
       text: "",
@@ -98,17 +97,27 @@ export default {
       oldMessages: [],
       senderIdReceived: "",
       LoginsenderId: this.$senderId,
-      newMessages: [],
-      tick: 0,
+      // newMessages: [],
+      read:false,
+      delivered:false,
+      send:false,
       notification: 0,
+      // id:1,
+      arr:'',
+      msgId:''
     };
   },
   methods: {
     async sendMessage() {
-
+      this.arr = JSON.parse(localStorage.getItem("names"));
+      const found = this.arr.find(element => element == this.$route.params.id);
+      if(found){
+        this.delivered=true
+      }else{
+        this.delivered=false
+      }
       this.notification++;
       const text = {
-        notification:this.notification,
         message: this.text,
         senderId: this.$senderId,
         receiverId:this.$route.params.id,
@@ -119,88 +128,107 @@ export default {
         }),
       };
       this.socket.emit("msgToServer", text);
-      this.text=''
-    },
-    async receiverMessage(msg) {
+          this.send=true
+          const msg={
+          senderId:this.$senderId,
+          receiverId:this.$route.params.id,
+          message:this.text,
+          delivered:this.delivered,
+          send:true,
+          time:new Date().toLocaleDateString([],{hour:'2-digit',minute:'2-digit',hour12:false})
+      }
 
-      // if(msg.receiverId!=this.$route.params.id||msg.id== this.$senderId){
+    const response= await jwtInterceptor.post('/chat/save-message',msg)
+
+      if(response&&response.data){
+        this.senderIdReceived=response.data.senderId
+          this.text='';
+      }
+
+        const msg1 = {
+        senderId: this.$senderId,
+        receiverId: this.$route.params.id,
+      };
+      const response1 = await jwtInterceptor.post("/chat/get-messages", msg1);
+      this.oldMessages = response1.data;
+  
+    },
+    
+    async receiverMessage(msg) {
+      if((msg.receiverId==this.$route.params.id&&msg.senderId== this.$senderId)||msg.senderId==this.$route.params.id&&msg.receiverId== this.$senderId){
    
-      const response=  await jwtInterceptor.post("/chat/update-notification", {
-            senderId: this.$senderId,
+       await jwtInterceptor.post("/chat/update-notification", {
+        senderId: this.$senderId,
         receiverId: this.$route.params.id,
         notification_count: this.notification,
       });
-      console.log(response);
-      this.newMessages.push(msg);
-      // }
+      // console.log(response);
+      this.oldMessages.push(msg);
+      }
   
     },
     inputEmoji(emoji) {
       this.text += emoji;
     },
   },
+
+      watch: {
+        '$route.params.id': {
+            immediate: true,
+           async handler() {
+                const msg = {
+                senderId: this.$senderId,
+                receiverId: this.$route.params.id,
+              };
+              const response = await jwtInterceptor.post("/chat/get-messages", msg);
+              this.oldMessages = response.data;
+             // // console.log("++++++++",response.data);
+            }
+        }
+    },
+
   async mounted() {
-    this.socket = io("http://localhost:3000");
-  //        this.socket.on('notification',()=>{
-  //       console.log('i am in chat header');
-  // //     let apiURL1 ="/chat/all-notification";
-  // //      const response1=await jwtInterceptor.post(apiURL1,{receiverId:id})
-  // //      this.notifications=response1.data
-       
-  // //      console.log("mounted",this.notifications);
-  // //           for (var i in this.userss) { 
-  // //       for(var j in this.notifications){
-  // //          console.log('hhhhhhhhhhh');
-  // //         if(this.userss[i]._id==this.notifications[j].senderId){
-  // //       // this.users[i].lastseen=response.data
-       
-  // //        this.userss[i].notify=this.notifications[j].notification_count
-
-  // //     }
-  // //  } 
-  // //   }
-  // //   this.users=this.userss
-  //       })
+     this.socket = io("http://localhost:3000");
     this.socket.on("msgToClient", async(message) => {
-      console.log("recccccc",message);
-    
       this.receiverMessage(message);
-     
     });
-      
-        this.notification=0
-         const response2 = await jwtInterceptor.post("/chat/update-notification", {
-           senderId: this.$route.params.id,
-        receiverId: this.$senderId,
-        notification_count: this.notification
-      });
-      console.log(response2);
-    
-  },
-//  async beforeUpdate(){
-//       const response=  await jwtInterceptor.post("/chat/update-notification", {
-//             senderId: this.$senderId,
-//         receiverId: this.$route.params.id,
-//         notification_count: this.notification,
-//       });
-//       console.log(response);
-//   },
-    
-  async created() {
-    try {
-      const response1 = await jwtInterceptor.post("/chat/create-chat-id", {
-        senderId: this.$senderId,
-        receiverId: this.$route.params.id,
-      });
-      console.log(response1.data);
-        
-
-      const msg = {
+      this.socket.on('connected',async(id)=>{
+      this.msgId=id;
+       const payload={
+         senderId: id,
+        //  tick:2
+        delivered:true
+        }
+        await jwtInterceptor.post("/chat/update-tick", payload);
+           
+           const msg1 = {
         senderId: this.$senderId,
         receiverId: this.$route.params.id,
       };
-      const response = await jwtInterceptor.post("/chat/get-messages", msg);
-      this.oldMessages = response.data;
+      const response1 = await jwtInterceptor.post("/chat/get-messages", msg1);
+  
+      this.oldMessages = response1.data;
+           
+        })
+        
+
+
+      this.notification=0
+      await jwtInterceptor.post("/chat/update-notification", {
+        senderId: this.$route.params.id,
+        receiverId: this.$senderId,
+        notification_count: this.notification
+      });
+  },
+
+  async created() {
+    try {
+       await jwtInterceptor.post("/chat/create-chat-id", {
+        senderId: this.$senderId,
+        receiverId: this.$route.params.id,
+      });
+         this.$store.commit('setLoginUser',this.$senderId)
+
     } catch (error) {
       console.log(error);
     }

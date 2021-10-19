@@ -16,6 +16,23 @@ export const ChatSchema = new mongoose.Schema({
   time:{
     type:String
   },
+  // tick:{
+  //   type: Number
+  // }
+  send:{
+    type : Boolean,
+    default:false
+  },
+  delivered:{
+    type : Boolean,
+    default:false
+  },
+  read:{
+    type : Boolean,
+    default:false
+  },
+  
+  
   
 
 });  
